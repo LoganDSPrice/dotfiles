@@ -13,6 +13,51 @@
   co = checkout
   pf = push --force-with-lease
   st = status
+
+  say = "!f() { msg=${1-Hello World}; echo $msg;  }; f"
+
+  logline = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+  # add all tracked and untracked files and commit with inline message
+  # cam <commit message>
+	cam = "!f() { \
+         git add -A && git commit -m \"$1\"; \
+       }; f"
+       
+  # soft reset last commit
+  r = reset --soft HEAD~1
+
+  # Add all changes to last commit
+	caa = "!f() { \
+         git add -A && git commit --amend -C HEAD; \
+       }; f"
+       
+  # Change message of last commit
+  # cnm <new commit message>
+	cnm = "!f() { \
+        git commit --amend -m \"$1\"; \
+       }; f"
+
+  # Prune merged branches locally
+  prune-local = !git branch --merged | grep -v \"\\*\" | grep -v master | grep -v dev | xargs -n 1 git branch -d
+
+  # Prune a given remote
+  # prune-remote <remote name>
+  prune-remote = !sh -c 'git fetch $1 && git remote-master-merged $1 | xargs git push --delete $1' -
+
+  # remote-master-merged <remote name>
+  remote-master-merged = !sh -c 'git remote-merged-refs $1 master' -
+
+  # remote-merged-refs <remote name> <branch name>
+	remote-merged-refs = "!f() { \
+                        remote=$1; \
+                        branch=$2; \
+                        git branch -r --merged $branch | \
+                        grep \"^  $remote/\" | \
+                        cut -c10- | \
+                        grep -v $branch; \
+                      }; f"
+  branches = branch --sort=-committerdate
 [core]
   excludesfile = ~/.gitignore
   autocrlf = input

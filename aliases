@@ -19,3 +19,11 @@ alias path='echo $PATH | tr -s ":" "\n"'
 if [[ -f ~/.aliases.local ]]; then
   source ~/.aliases.local
 fi
+
+
+# My aliases
+alias wow="cd ~/"
+alias kill_everything="pkill -9 -f 'rb-fsevent|rails|spring|puma|redis'; rm /usr/local/var/postgres/postmaster.pid"
+alias local_server="redis-cli shutdown ; heroku local -f Procfile.dev"
+alias yolo="rails db:drop db:create db:migrate db:seed"
+alias load_secrets="~/opensesame/load_secrets.sh"
